@@ -1,4 +1,4 @@
-module Wizard
+module WizardSteps
   class Step
     include ActiveModel::Model
     include ActiveModel::Attributes

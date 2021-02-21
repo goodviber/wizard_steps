@@ -70,7 +70,7 @@ private
   end
 
   def wizard_store
-    ::Wizard::Store.new(session_store)
+    ::WizardSteps::Store.new(session_store)
   end
 
   def session_store

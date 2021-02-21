@@ -5,9 +5,9 @@ require 'active_support/core_ext/module'
 require 'active_model'
 require 'active_support/core_ext/array/wrap'
 
-require "wizard_steps/wizard/store"
-require "wizard_steps/wizard/base"
-require "wizard_steps/wizard/step"
+require "wizard_steps/store"
+require "wizard_steps/base"
+require "wizard_steps/step"
 require "support/shared_examples/wizard_support"
 
 RSpec.configure do |config|

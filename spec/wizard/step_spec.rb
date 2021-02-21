@@ -1,10 +1,10 @@
 require "spec_helper"
-require "wizard_steps/wizard/step"
+require "wizard_steps/step"
 
-RSpec.describe Wizard::Step do
+RSpec.describe WizardSteps::Step do
   include_context "wizard store"
 
-  class FirstStep < Wizard::Step
+  class FirstStep < WizardSteps::Step
     attribute :name
     attribute :age, :integer
     validates :name, presence: true

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "wizard_steps/wizard/base"
+require "wizard_steps/base"
 
-RSpec.describe Wizard::Base do
+RSpec.describe WizardSteps::Base do
   include_context "wizard store"
 
   let(:wizardclass) { TestWizard }
@@ -25,7 +25,7 @@ RSpec.describe Wizard::Base do
 
     it "will raise exception for unknown step" do
       expect { wizardclass.step("unknown") }.to \
-        raise_exception(Wizard::UnknownStep)
+        raise_exception(WizardSteps::UnknownStep)
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe Wizard::Base do
 
     it "will raise exception for unknown step" do
       expect { wizardclass.key_index("unknown") }.to \
-        raise_exception(Wizard::UnknownStep)
+        raise_exception(WizardSteps::UnknownStep)
     end
   end
 
@@ -57,7 +57,7 @@ RSpec.describe Wizard::Base do
 
     it "should raise exception for unknown step" do
       expect { wizardclass.new wizardstore, "unknown" }.to \
-        raise_exception Wizard::UnknownStep
+        raise_exception WizardSteps::UnknownStep
     end
   end
 

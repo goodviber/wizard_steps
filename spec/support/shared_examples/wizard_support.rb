@@ -1,6 +1,6 @@
 RSpec.shared_context "wizard store" do
   let(:backingstore) { { "name" => "Joe", "age" => 35 } }
-  let(:wizardstore) { Wizard::Store.new backingstore }
+  let(:wizardstore) { WizardSteps::Store.new backingstore }
 end
 
 RSpec.shared_context "wizard step" do
@@ -15,18 +15,18 @@ RSpec.shared_examples "a wizard step" do
   it { is_expected.to respond_to :save! }
 end
 
-class TestWizard < Wizard::Base
-  class Name < Wizard::Step
+class TestWizard < WizardSteps::Base
+  class Name < WizardSteps::Step
     attribute :name
     validates :name, presence: true
   end
 
-  class Age < Wizard::Step
+  class Age < WizardSteps::Step
     attribute :age, :integer
     validates :age, presence: true
   end
 
-  class Postcode < Wizard::Step
+  class Postcode < WizardSteps::Step
     attribute :postcode
     validates :postcode, presence: true
   end

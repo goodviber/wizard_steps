@@ -1,6 +1,6 @@
 require 'active_support/core_ext/module'
 
-module Wizard
+module WizardSteps
   class Store
     attr_reader :data
     delegate :keys, to: :data

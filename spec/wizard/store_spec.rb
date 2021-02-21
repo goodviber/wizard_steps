@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe Wizard::Store do
+RSpec.describe WizardSteps::Store do
   let(:backingstore) do
     { "first_name" => "Joe", "age" => 20, "region" => "Manchester" }
   end
@@ -9,7 +9,7 @@ RSpec.describe Wizard::Store do
 
   describe ".new" do
     context "with valid source data" do
-      it { is_expected.to be_instance_of(Wizard::Store) }
+      it { is_expected.to be_instance_of(WizardSteps::Store) }
       it { is_expected.to have_attributes data: backingstore }
       it { is_expected.to respond_to :[] }
       it { is_expected.to respond_to :[]= }
@@ -19,7 +19,7 @@ RSpec.describe Wizard::Store do
       subject { described_class.new nil }
 
       it "should raise an InvalidBackingStore" do
-        expect { subject }.to raise_exception(Wizard::Store::InvalidBackingStore)
+        expect { subject }.to raise_exception(WizardSteps::Store::InvalidBackingStore)
       end
     end
   end
