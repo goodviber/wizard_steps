@@ -10,16 +10,16 @@ module WizardSteps
   end
 
   def index
-    skip_policy_scope
+    #skip_policy_scope
     redirect_to step_path(wizard_class.first_key)
   end
 
   def show
-    authorize wizard
+    #authorize wizard
   end
 
   def update
-    authorize wizard
+    #authorize wizard
     current_step.assign_attributes step_params
 
     if current_step.save!
@@ -34,7 +34,7 @@ module WizardSteps
   end
 
   def completed
-    authorize wizard_class
+    #authorize wizard_class
   end
 
 private
@@ -70,7 +70,7 @@ private
   end
 
   def wizard_store
-    ::Wizard::Store.new(session_store)
+    ::WizardSteps::Store.new(session_store)
   end
 
   def session_store

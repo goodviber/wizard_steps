@@ -1,7 +1,7 @@
 require 'active_support/concern'
 require 'active_support/core_ext/module'
 
-module Wizard
+module WizardSteps
   class UnknownStep < RuntimeError; end
 
   class Base
