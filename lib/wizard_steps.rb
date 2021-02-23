@@ -1,6 +1,8 @@
 require "wizard_steps/version"
 require "active_support/concern"
 require "wizard_steps/store"
+require "wizard_steps/step"
+require "wizard_steps/base"
 
 module WizardSteps
   extend ActiveSupport::Concern
