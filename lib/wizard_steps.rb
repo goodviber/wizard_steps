@@ -3,7 +3,7 @@ require "active_support/concern"
 #require "wizard_steps/store"
 #require "wizard_steps/step"
 #require "wizard_steps/base"
-Dir["../lib/wizard_steps/*.rb"].each { |file| require file }
+Dir[File.join(__dir__, 'wizard_steps', '*.rb')].each { |file| require file }
 
 module WizardSteps
   extend ActiveSupport::Concern
