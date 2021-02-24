@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wizard_steps (0.1.2)
+    wizard_steps (0.1.3)
 
 GEM
   remote: https://rubygems.org/

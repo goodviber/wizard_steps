@@ -1,13 +1,12 @@
 require "bundler/setup"
 
-require 'active_support/concern'
-require 'active_support/core_ext/module'
-require 'active_model'
-require 'active_support/core_ext/array/wrap'
+require "active_support/concern"
+require "active_support/core_ext/module"
+require "active_model"
+require "active_support/core_ext/array/wrap"
 
-require "wizard_steps/store"
-require "wizard_steps/base"
-require "wizard_steps/step"
+Dir["./lib/wizard_steps/*.rb"].each { |file| require file }
+
 require "support/shared_examples/wizard_support"
 
 RSpec.configure do |config|

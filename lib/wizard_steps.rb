@@ -1,9 +1,5 @@
-#require "wizard_steps/version"
 require "active_support/concern"
-#require "wizard_steps/store"
-#require "wizard_steps/step"
-#require "wizard_steps/base"
-Dir[File.join(__dir__, 'wizard_steps', '*.rb')].each { |file| require file }
+Dir[File.join(__dir__, "wizard_steps", "*.rb")].each { |file| require file }
 
 module WizardSteps
   extend ActiveSupport::Concern
@@ -14,16 +10,12 @@ module WizardSteps
   end
 
   def index
-    #skip_policy_scope
     redirect_to step_path(wizard_class.first_key)
   end
 
-  def show
-    #authorize wizard
-  end
+  def show; end
 
   def update
-    #authorize wizard
     current_step.assign_attributes step_params
 
     if current_step.save!
@@ -37,9 +29,7 @@ module WizardSteps
     end
   end
 
-  def completed
-    #authorize wizard_class
-  end
+  def completed; end
 
 private
 
@@ -93,3 +83,4 @@ private
     redirect_to(action: :completed)
   end
 end
+
