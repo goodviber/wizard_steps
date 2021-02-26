@@ -45,8 +45,6 @@ For the above example with four steps and a User class, lets have a look at what
 ```
 # app/models/user_creation/wizard.rb
 
-require 'wizard_steps/base'
-
 module UserCreation
   class Wizard < WizardSteps::Base
     self.steps = [
@@ -81,12 +79,10 @@ Wait, but what does each step look like? Similarly to the above, it follows a mo
 ```
 # app/models/steps/register_name.rb
 
-require 'wizard_steps/step'
-
 module UserCreation
   module Steps
     class RegisterName < WizardSteps::Step
-      include ActiveRecord::AttributeAssignment
+      include ActiveRecord::AttributeAssignment #TODO talk about dates
 
       attribute :first_name, :string
       attribute :last_name, :string
