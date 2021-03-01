@@ -1,8 +1,6 @@
 # WizardSteps
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/wizard_steps`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+TODO: describe your gem
 
 ## Installation
 
@@ -22,25 +20,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Firstly, there is a pre-requisite of knowing what a multi-step form is if you don't already. A great resource is [this rails cast](http://railscasts.com/episodes/217-multistep-forms).
 
-## Here are some instructions in how to create multi-step forms with the Wizard Steps gem
+The gem is based on a typical MVC style (model-view-controller)
 
-Firstly, there is a pre-requisite of knowing what a multi-step form is if you dont already. A great resource is [this rails cast](http://railscasts.com/episodes/217-multistep-forms).
+## Model
 
-To use this gem, you will need to register your steps in a wizard.rb file, located at the base of your multi step folder. Take the following file structure below as an example for a model to create a user
+List your steps in a wizard.rb file, located at the base of your multi-step folder. Take the following file structure below as an example for a model to create a user:
 
 ```
 |models
 |__user_creation
 |  |__steps
-|  |  |__register_name.rb
-|  |  |__register_age.rb
-|  |  |__register_gender.rb
+|  |  |__name.rb
+|  |  |__date_of_birth.rb
+|  |  |__gender.rb
 |  |  |__review_answers.rb
-|  |__wizard.rb  <--- register your steps here
+|  |__wizard.rb  <--- list your steps here
+|__user.rb
 ```
-For the above example with four steps and a User class, lets have a look at what the wizard.rb could look like:
+For the above example with a User class in user.rb, a user_creation folder with four steps, lets have a look at what the wizard.rb would look like:
 
 ```
 # app/models/user_creation/wizard.rb
@@ -48,9 +47,9 @@ For the above example with four steps and a User class, lets have a look at what
 module UserCreation
   class Wizard < WizardSteps::Base
     self.steps = [
-      Steps::RegisterName,
-      Steps::RegisterAge,
-      Steps::RegisterGender,
+      Steps::Name,
+      Steps::DateOfBirth,
+      Steps::Gender,
       Steps::ReviewAnswers
     ].freeze
 
@@ -68,20 +67,20 @@ module UserCreation
 end
 ```
 
-Cool. You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using. These steps should reflect what you have in your views and in the steps folder in the current directory.
+Cool. You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using.
 
-The private method, do_complete, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, and is what will be written into the db.
+The private method, do_complete, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how @store is accessed.
 
-In this example, our multi step form is for the User model, so we ask various attributes in each step, such as Name, Age and Gender, store it, review the answers, and if all is good, we submit it.
+In this example, our multi step form is for the User model, so we ask various attributes in each step, such as Name, date_of_birth and Gender, store it, review the answers, and if all is good, we submit it.
 
 Wait, but what does each step look like? Similarly to the above, it follows a modular pattern. Take the below as an example.
 
 ```
-# app/models/steps/register_name.rb
+# app/models/user_creation/steps/name.rb
 
 module UserCreation
   module Steps
-    class RegisterName < WizardSteps::Step
+    class Name < WizardSteps::Step
       include ActiveRecord::AttributeAssignment #TODO talk about dates
 
       attribute :first_name, :string
@@ -99,13 +98,45 @@ module UserCreation
   end
 end
 ```
+The step name (`Name`) inherits from `WizardSteps::Step` which includes ActiveModel, so we can define and validate attributes in each class. The `reviewable_answers` method defines a hash that will be passed to the review_answers view.
 
-I wont dive into this too deeply, but as you can see its similar to the above. Wrap your modules up, and derive the step name (`RegisterName`) from `WizardSteps::Step`. Validate the fields you wish to add to the store.
+### Date attribute
 
-Your review answers can look something like this:
+As the steps are ActiveModels, we need to include `ActiveRecord::AttributeAssignment` to simplify processing Rails date fields:
 
 ```
-require 'wizard_steps/step'
+# models/user_creation/steps/_date_of_birth.rb
+
+module UserCreation
+  module Steps
+    class DateOfBirth < ::Wizard::Step
+      include ActiveRecord::AttributeAssignment
+
+      attribute :date_of_birth, :date
+
+      validates :date_of_birth, presence: true
+
+      def reviewable_answers
+        {
+          "date_of_birth" => date_of_birth,
+        }
+      end
+    end
+  end
+end
+
+# views/user_creation/steps/_date_of_birth.html.erb
+
+<%= form_for current_step, url: step_path do |f| %>
+    <%= f.date_field, :date_of_birth %>
+<% end %>
+```
+## Review Answers
+
+Your review_answers will look like this:
+
+```
+# models/user_creation/steps/review_answers.rb
 
 module UserCreation
   module Steps
@@ -117,11 +148,19 @@ module UserCreation
   end
 end
 
+# views/user_creation/steps/_review_answers.html.erb
+
+<% f.object.answers_by_step.each do |step, answers| %>
+    <% answers.each do |answer| %>
+    # you have `step.key`, `answer.first`, `answer.last`
+    # and you can link back to a `(step`)
+    <% end %>
+<% end %>
 ```
 
-Lets move onto the controller.
+## Lets move onto the controller.
 
-Your controller layour should be something like the following:
+Your controller layout should follow:
 
 ```
 |controllers
@@ -129,7 +168,7 @@ Your controller layour should be something like the following:
 |  |__steps_controller.rb
 ```
 
-Yep, its that simple.
+Yep, its that simple. And in the controller:
 
 ```
 # app/controllers/user_creation/steps_controller.rb
@@ -149,7 +188,7 @@ module UserCreation
       :user_creation
     end
 
-    def on_complete(child)
+    def on_complete(user)
       redirect_to(<your custom route>)
     end
   end
@@ -163,15 +202,17 @@ And the views;
 ```
 |views
 |__user_creation
-|  |__ _register_name.html.erb
-|  |__ _register_age.html.erb
-|  |__ _register_gender.html.erb
-|  |__ _review_answers.html.erb
-|  |__show.html.erb
+|  |__steps
+|     |__ _form.html.erb
+|     |__ _name.html.erb
+|     |__ _date_of_birth.html.erb
+|     |__ _gender.html.erb
+|     |__ _review_answers.html.erb
+|     |__show.html.erb
 ```
 
 ```
-# app/views/user_creation/_register_name.html.erb
+# app/views/user_creation/_name.html.erb
 <%= f.govuk_fieldset legend: { text: "Name" } do %>
   <%= f.govuk_text_field :first_name, label: { text: 'First name' } %>
   <%= f.govuk_text_field :last_name %>
@@ -182,11 +223,39 @@ And the views;
 # app/views/user_creation/show.html.erb
 <%= render "form", current_step: current_step, wizard: wizard %>
 ```
+The form partial can check for `wizard.previous_key` as a conditional for a back button, and `wizard.can_proceed?` for a continue/submit button.
+The other key lines are:
+```
+<%= form_for current_step, url: step_path do |f| %>
+    <%= render current_step.key, current_step: current_step, f: f %>
+<% end >
+```
+As an example:
 
 ```
-# app/views/user_creation/show.html.erb
-<%= render "form", current_step: current_step, wizard: wizard %>
+# app/views/user_creation/steps/_form.html.erb
+
+<% if wizard.previous_key %>
+  <% content_for(:back_button) do %>
+  <%= back_link step_path(wizard.previous_key) %>
+  <% end %>
+<% end %>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <%= form_for current_step, url: step_path do |f| %>
+      <%= f.govuk_error_summary %>
+
+      <%= render current_step.key, current_step: current_step, f: f %>
+
+      <% if wizard.can_proceed? %>
+        <%= f.govuk_submit("Continue") %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
 ```
+
 
 And finally, in your routes
 
@@ -195,6 +264,8 @@ namespace :children_creation do
   resources :steps, only: %i[show update]
 end
 ```
+
+## Context - TODO
 
 ## Development
 
