@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Firstly, there is a pre-requisite of knowing what a multi-step form is if you don't already. A great resource is [this rails cast](http://railscasts.com/episodes/217-multistep-forms).
 
-The gem is based on a typical MVC style (model-view-controller)
+The gem is fits a typical MVC style (model-view-controller)
 
 ## Model
 
@@ -67,11 +67,11 @@ module UserCreation
 end
 ```
 
-Cool. You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using.
+You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using in the correct order.
 
 The private method, do_complete, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how @store is accessed.
 
-In this example, our multi step form is for the User model, so we ask various attributes in each step, such as Name, date_of_birth and Gender, store it, review the answers, and if all is good, we submit it.
+In this example, our multi step form is for the User model, so we require various attributes in each step, such as Name, date of birth and Gender, store it, review the answers, and if all is good, we submit it.
 
 Wait, but what does each step look like? Similarly to the above, it follows a modular pattern. Take the below as an example.
 
@@ -81,7 +81,6 @@ Wait, but what does each step look like? Similarly to the above, it follows a mo
 module UserCreation
   module Steps
     class Name < WizardSteps::Step
-      include ActiveRecord::AttributeAssignment #TODO talk about dates
 
       attribute :first_name, :string
       attribute :last_name, :string
@@ -215,7 +214,7 @@ And the views;
 # app/views/user_creation/_name.html.erb
 <%= f.govuk_fieldset legend: { text: "Name" } do %>
   <%= f.govuk_text_field :first_name, label: { text: 'First name' } %>
-  <%= f.govuk_text_field :last_name %>
+  <%= f.govuk_text_field :last_name, label: { text: 'Last name' } %>
 <% end %>
 ```
 
@@ -266,6 +265,8 @@ end
 ```
 
 ## Context - TODO
+
+## Skipping Steps
 
 ## Development
 
