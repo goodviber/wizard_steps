@@ -71,7 +71,7 @@ You create a module to wrap the multi step form. Inside this module, create a ne
 
 The private method, do_complete, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how @store is accessed.
 
-In this example, our multi step form is for the User model, so we require various attributes in each step, such as Name, date of birth and Gender, store it, review the answers, and if all is good, we submit it.
+In this example, our multi step form is for the User model, so we require various attributes in each step, such as Name, Date Of Birth and Gender, store them, review the answers, and if all is good, we submit.
 
 Wait, but what does each step look like? Similarly to the above, it follows a modular pattern. Take the below as an example.
 
@@ -85,8 +85,7 @@ module UserCreation
       attribute :first_name, :string
       attribute :last_name, :string
 
-      validates :first_name, :last_name
-      presence: true
+      validates :first_name, :last_name, presence: true
 
       def reviewable_answers
         {
@@ -104,7 +103,7 @@ The step name (`Name`) inherits from `WizardSteps::Step` which includes ActiveMo
 As the steps are ActiveModels, we need to include `ActiveRecord::AttributeAssignment` to simplify processing Rails date fields:
 
 ```
-# models/user_creation/steps/_date_of_birth.rb
+# models/user_creation/steps/date_of_birth.rb
 
 module UserCreation
   module Steps
@@ -276,5 +275,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/wizard_steps.
+Bug reports and pull requests are welcome on GitHub at https://github.com/goodviber/wizard_steps.
 
