@@ -263,7 +263,96 @@ namespace :children_creation do
 end
 ```
 
-## Context - TODO
+## Context
+
+It is possible to include a `context` where a stepped model belongs_to another model, in order to pass the latter id (foreign_key) to the stepped model. As an example we have a DiaryEntry which belongs to a Placement:
+```
+# app/models/diary_entry.rb
+
+class DiaryEntry < ApplicationRecord
+  belongs_to :placement, optional: false, inverse_of: :diary_entries
+
+  validates :event, presence: true
+  validates :note, presence: true
+end
+
+# app/models/placement.rb
+
+class Placement < ApplicationRecord
+  has_many :diary_entries, inverse_of: :placement
+  ...
+end
+```
+
+The model structure follows:
+```
+|models
+|__diary
+|  |__steps
+|  |  |__note.rb
+|  |  |__event.rb
+|  |  |__review_answers.rb
+|  |__wizard.rb  <--- list your steps here
+|__diary_entry.rb
+|__placement.rb
+```
+
+In the controller we have a placement_id in step_path and wizard_context:
+```
+# app/controllers/diary/steps_controller.rb
+
+module Diary
+  class StepsController < ApplicationController
+    include WizardSteps
+    self.wizard_class = Diary::Wizard
+
+  private
+
+    def step_path(step = params[:id])
+      placement_diary_step_path(placement_id: params[:placement_id], id: step)
+    end
+
+    def wizard_store_key
+      :diary
+    end
+
+    def wizard_context
+      {
+        "placement_id" => params[:placement_id],
+      }
+    end
+
+    def set_page_title
+      @page_title = "#{@current_step.title.downcase} step"
+    end
+  end
+end
+```
+
+The placement_id is now available in @context["placement_id"] in wizard.rb
+```
+# app/models/diary/wizard.rb
+
+module Diary
+  class Wizard < ::Wizard::Base
+    self.steps = [
+      Steps::SelectEvent,
+      Steps::Note,
+      Steps::ReviewAnswers,
+    ].freeze
+
+  private
+
+    def do_complete
+      DiaryEntry.create!(
+        placement_id: @context["placement_id"],
+        event: @store.data["event"],
+        note: @store.data["entry"],
+      )
+    end
+  end
+end
+```
 
 ## Skipping Steps
 
