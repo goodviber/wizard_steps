@@ -20,13 +20,13 @@ Or install it yourself as:
 
 ## Usage
 
-Firstly, there is a pre-requisite of knowing what a multi-step form is if you don't already. A great resource is [this rails cast](http://railscasts.com/episodes/217-multistep-forms).
+Firstly, there is a pre-requisite of knowing what a multi-step form is if you don't already. A great resource is [this railscast](http://railscasts.com/episodes/217-multistep-forms).
 
 The gem is fits a typical MVC style (model-view-controller)
 
 ## Model
 
-List your steps in a wizard.rb file, located at the base of your multi-step folder. Take the following file structure below as an example for a model to create a user:
+List your steps in a wizard.rb file, located at the base of your multi-step folder. Take the following file structure below as an example for a module to create a user:
 
 ```
 |models
@@ -69,7 +69,7 @@ end
 
 You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using in the correct order.
 
-The private method, do_complete, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how @store is accessed.
+The private method, `do_complete`, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how `@store.data` is accessed.
 
 In this example, our multi step form is for the User model, so we require various attributes in each step, such as Name, Date Of Birth and Gender, store them, review the answers, and if all is good, we submit.
 
@@ -297,7 +297,7 @@ The model structure follows:
 |__placement.rb
 ```
 
-In the controller we have a placement_id in step_path and wizard_context:
+In the controller we have a `placement_id` in `step_path` and `wizard_context`:
 ```
 # app/controllers/diary/steps_controller.rb
 
@@ -327,6 +327,23 @@ module Diary
     end
   end
 end
+```
+
+In our routes:
+```
+resources :placements, only: :create do
+    resources :diary_entries,
+              only: %i[index show] do
+    end
+    namespace :diary do
+      resources :steps,
+                only: %i[index show update] do
+        collection do
+          get :completed
+        end
+      end
+    end
+  end
 ```
 
 The placement_id is now available in @context["placement_id"] in wizard.rb
