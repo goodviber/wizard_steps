@@ -373,11 +373,48 @@ end
 
 ## Skipping Steps
 
-## Development
+The order of the steps are linear. It is possible to have a branching flow by conditionally skipping a step. Steps have a default `skipped?` status of false. This can be altered by defining `skipped?` in the individual step on some condition, ususally dependent on the contents of the `@store` hash derived from previous steps, e.g.
+```
+def skipped?
+  result = @store["some condition here is true"]
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  result
+end
+```
+## Access the store data
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+The `store` is a reflection of part of the session data, and can be accessed by placing a `<% byebug %>` in any step view. The session key is set from the `wizard_store_key` defined in relevent `steps_controller.rb`, e.g.
+```
+#app/controllers/children_creation/steps_controller.rb
+
+module ChildrenCreation
+  class StepsController < ApplicationController
+    include WizardSteps
+    self.wizard_class = ChildrenCreation::Wizard
+
+  private
+
+    def step_path(step = params[:id])
+      children_creation_step_path(step)
+    end
+
+    def wizard_store_key
+      :children_creation # KEY DEFINED HERE
+    end
+
+    def on_complete(child)
+      redirect_to(new_child_placement_need_path(child.id))
+    end
+  end
+end
+```
+
+With `byebug` activated in a step view, in the console all data collected up to that view will be available:
+
+```
+(byebug) session[:children_creation]
+{"first_name"=>"joe", "last_name"=>"bloggs", "date_of_birth"=>"2000-01-01"}
+```
 
 ## Contributing
 
