@@ -69,7 +69,7 @@ end
 
 You create a module to wrap the multi step form. Inside this module, create a new wizard which derives from WizardSteps::Base, and register the steps you plan on using in the correct order.
 
-The private method, `do_complete`, is what will be called **once the form has been submitted fully, ie when all the steps are complete**, in this example we are creating a User instance in the database. Note how `@store.data` is accessed.
+The private method, `do_complete`, is what will be called **when the last step has been submitted**, in this example we are creating a User instance in the database. Note how `@store.data` is accessed.
 
 In this example, our multi step form is for the User model, so we require various attributes in each step, such as Name, Date Of Birth and Gender, store them, review the answers, and if all is good, we submit.
 
@@ -346,7 +346,7 @@ resources :placements, only: :create do
   end
 ```
 
-The placement_id is now available in @context["placement_id"] in wizard.rb
+The placement_id is now available in `@context["placement_id"]` in wizard.rb
 ```
 # app/models/diary/wizard.rb
 
@@ -373,7 +373,7 @@ end
 
 ## Skipping Steps
 
-The order of the steps are linear. It is possible to have a branching flow by conditionally skipping a step. Steps have a default `skipped?` status of false. This can be altered by defining `skipped?` in the individual step on some condition, ususally dependent on the contents of the `@store` hash derived from previous steps, e.g.
+The order of the steps are linear however it is possible to create a branching flow by conditionally skipping any number of steps. Steps have a default `skipped?` status of false. This can be altered by defining `skipped?` in the individual step on some condition, ususally dependent on the contents of the `@store` hash derived from previous steps, e.g.
 ```
 def skipped?
   result = @store["some condition here is true"]
@@ -381,7 +381,10 @@ def skipped?
   result
 end
 ```
-## Access the store data
+
+A step with a `skipped?` status of true will not be shown in the form flow. In this manner it is possible to build quite complex branching forms, although the conditional logic can become convoluted!
+
+## Accessing the store data
 
 The `store` is a reflection of part of the session data, and can be accessed by placing a `<% byebug %>` in any step view. The session key is set from the `wizard_store_key` defined in relevent `steps_controller.rb`, e.g.
 ```
