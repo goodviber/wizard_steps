@@ -1,6 +1,6 @@
 # WizardSteps
 
-TODO: describe your gem
+A helper module for creating multi-step forms, such as used in gov.uk applications. Read on for full instructions...
 
 ## Installation
 

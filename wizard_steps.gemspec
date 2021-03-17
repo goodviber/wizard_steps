@@ -7,10 +7,11 @@ Gem::Specification.new do |spec|
   spec.email         = ["8balldigitalsolutions@gmail.com"]
 
   spec.summary       = %q{ A helper module to create multi-step forms typical of gov.uk forms }
-  spec.description   = %q{ See README for full description }
+  spec.description   = %q{ A helper module for multi-step inputs typical of gov.uk forms. See the README for full instructions. }
   spec.homepage      = "https://github.com/goodviber/wizard_steps"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
+  spec.metadata['allowed_push_host'] = "https://rubygems.org"
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
 
@@ -23,3 +24,4 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 end
+
