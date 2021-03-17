@@ -2,6 +2,8 @@
 
 A helper module for creating multi-step forms, such as used in gov.uk applications. Read on for full instructions...
 
+Contributions from https://github.com/ethax-ross, https://github.com/stellenberger, https://github.com/novotnyjakub
+
 ## Installation
 
 Add this line to your application's Gemfile:
