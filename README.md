@@ -151,7 +151,7 @@ end
 <% f.object.answers_by_step.each do |step, answers| %>
     <% answers.each do |answer| %>
     # you have `step.key`, `answer.first`, `answer.last`
-    # and you can link back to a `(step`)
+    # and you can link back to a `(step)`
     <% end %>
 <% end %>
 ```
@@ -211,6 +211,7 @@ And the views;
 
 ```
 # app/views/user_creation/_name.html.erb
+
 <%= f.govuk_fieldset legend: { text: "Name" } do %>
   <%= f.govuk_text_field :first_name, label: { text: 'First name' } %>
   <%= f.govuk_text_field :last_name, label: { text: 'Last name' } %>
@@ -219,6 +220,7 @@ And the views;
 
 ```
 # app/views/user_creation/show.html.erb
+
 <%= render "form", current_step: current_step, wizard: wizard %>
 ```
 The form partial can check for `wizard.previous_key` as a conditional for a back button, and `wizard.can_proceed?` for a continue/submit button.
