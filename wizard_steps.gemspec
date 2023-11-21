@@ -5,6 +5,7 @@ Gem::Specification.new do |spec|
   spec.version       = WizardSteps::VERSION
   spec.author        = "Max Mills"
   spec.email         = ["8balldigitalsolutions@gmail.com"]
+  spec.license       = "MIT"
 
   spec.summary       = %q{ A helper module to create multi-step forms typical of gov.uk forms }
   spec.description   = %q{ A helper module for multi-step inputs typical of gov.uk forms. See the README for full instructions. }
